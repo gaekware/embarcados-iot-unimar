@@ -1,0 +1,133 @@
+openapi: 3.0.0
+info:
+  title: API ESP32 DHT22
+  description: API REST para receber dados de umidade do solo de um módulo ESP32 + DHT22
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Servidor de desenvolvimento
+paths:
+  /api/sensors:
+    post:
+      summary: Cria uma nova leitura de sensor
+      description: Endpoint utilizado pelo ESP32 para enviar dados lidos pelo sensor.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSensorReadingDTO"
+      responses:
+        "201":
+          description: Leitura criada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SensorReading"
+        "400":
+          description: Campos obrigatórios ausentes ou inválidos
+    get:
+      summary: Lista todas as leituras de sensor
+      description: Retorna uma lista paginada de todas as leituras armazenadas.
+      parameters:
+        - in: query
+          name: deviceId
+          schema:
+            type: string
+          description: Filtra leituras por um ID de dispositivo específico
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 50
+          description: Quantidade máxima de registros a retornar
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            default: 0
+          description: Quantidade de registros a pular (para paginação)
+      responses:
+        "200":
+          description: Lista de leituras retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    example: 42
+                  readings:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/SensorReading"
+  /api/sensors/{id}:
+    get:
+      summary: Busca uma leitura de sensor pelo ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID numérico da leitura
+      responses:
+        "200":
+          description: Leitura encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SensorReading"
+        "400":
+          description: ID inválido
+        "404":
+          description: Leitura não encontrada
+components:
+  schemas:
+    SensorReading:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        deviceId:
+          type: string
+          example: "esp32-001"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2026-02-24T20:00:00Z"
+        soilMoistureRaw:
+          type: integer
+          example: 1500
+        soilMoisturePercent:
+          type: number
+          format: float
+          example: 65.3
+        createdAt:
+          type: string
+          format: date-time
+          example: "2026-02-24T20:00:01Z"
+    CreateSensorReadingDTO:
+      type: object
+      required:
+        - deviceId
+        - timestamp
+        - soilMoistureRaw
+        - soilMoisturePercent
+      properties:
+        deviceId:
+          type: string
+          example: "esp32-001"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2026-02-24T20:00:00Z"
+        soilMoistureRaw:
+          type: integer
+          example: 1500
+        soilMoisturePercent:
+          type: number
+          format: float
+          example: 65.3
