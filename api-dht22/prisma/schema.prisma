@@ -1,0 +1,25 @@
+// This is your Prisma schema file.
+// In Prisma 7, datasource `url` is configured in prisma.config.ts (not here).
+// https://pris.ly/d/prisma-config
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model SensorReading {
+  id                  Int      @id @default(autoincrement())
+  deviceId            String
+  timestamp           DateTime
+  soilMoistureRaw     Int
+  soilMoisturePercent Float
+  createdAt           DateTime @default(now())
+
+  @@index([deviceId])
+  @@index([timestamp])
+  @@map("sensor_readings")
+}
