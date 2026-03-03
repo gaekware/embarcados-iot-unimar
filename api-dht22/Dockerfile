@@ -30,10 +30,13 @@ RUN npm install --production
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/swagger.yaml ./swagger.yaml
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/prisma ./prisma
 
-RUN npx prisma migrate deploy
+# Copy entrypoint
+COPY docker-entrypoint.sh ./
+RUN chmod +x docker-entrypoint.sh
 
-EXPOSE 8080
+EXPOSE 3000
 
-CMD ["node", "dist/server.js"]
+CMD ["sh", "docker-entrypoint.sh"]
 
