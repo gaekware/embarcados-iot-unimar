@@ -23,14 +23,14 @@ RUN apk add --no-cache openssl
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install --production
 
-# Copy built app and generated prisma client
+# Copy built app, generated prisma client and prisma config
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/swagger.yaml ./swagger.yaml
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/prisma.config.ts ./
 
 # Copy entrypoint
 COPY docker-entrypoint.sh ./
