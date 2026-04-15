@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "author": "Unimar - Sistemas Embarcados e IoT",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-esp32-devkit-v1",
+      "id": "esp",
+      "top": 0,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-dht22",
+      "id": "dht1",
+      "top": -80,
+      "left": 200,
+      "attrs": { "temperature": "27.5", "humidity": "60" }
+    }
+  ],
+  "connections": [
+    ["esp:3V3",  "dht1:VCC", "red",   []],
+    ["esp:GND.1","dht1:GND", "black", []],
+    ["esp:D4",   "dht1:SDA", "green", []]
+  ],
+  "dependencies": {}
+}
