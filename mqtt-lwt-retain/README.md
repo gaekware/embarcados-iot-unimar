@@ -2,9 +2,12 @@
 
 Demonstração prática do uso de Last Will and Testament (LWT) e Retain Flag no protocolo MQTT com ESP32, simulado via Wokwi.
 
+Adrian Wilmer Jaquier - 1976614
+Kauê da Silva França - 1964011
+
 ---
 
-## 📚 Conceitos
+## Conceitos
 
 ### Last Will and Testament (LWT)
 
@@ -41,6 +44,7 @@ A Retain Flag instrui o broker a guardar a última mensagem publicada em um dete
 | Configuração/parâmetros publicados pelo servidor | Sim | Dispositivo recebe config ao reconectar |
 | Stream de eventos contínuos (logs, telemetria) | Não | Cada mensagem é um evento único, não um estado |
 | Comandos de ação (ligar motor, disparar relé) | Não | Risco de reexecutar ação antiga em nova conexão 
+
 #### Impactos no sistema IoT real
 
 - Inicialização rápida: Dashboards e novos assinantes têm contexto imediato sem esperar o próximo ciclo do sensor.
@@ -62,19 +66,6 @@ mqtt-lwt-retain/
 │   └── monitor.py          ← Script Python: assina e exibe mensagens
 └── README.md               ← Este arquivo
 ```
-
----
-
-## ⚙️ Stack
-
-| Camada | Tecnologia |
-|--------|-----------|
-| Hardware | ESP32 (simulado no Wokwi) |
-| Sensor | DHT22 (temperatura e umidade) |
-| Protocolo | MQTT v3.1.1 |
-| Broker | broker.hivemq.com (público, sem auth) |
-| Firmware | Arduino C++ |
-| Monitor | Python 3 + paho-mqtt |
 
 ---
 
@@ -115,9 +106,9 @@ O monitor irá assinar os tópicos e exibir:
 
 | Tópico | QoS | Retain | Conteúdo |
 |--------|-----|--------|---------|
-| `unimar/esp32/status` | 1 | ✅ Sim | `"ONLINE"` / `"OFFLINE"` (LWT) |
-| `unimar/esp32/temperatura` | 0 | ❌ Não | Valor float em °C |
-| `unimar/esp32/umidade` | 0 | ❌ Não | Valor float em % |
+| `unimar/esp32/status` | 1 | Sim | `"ONLINE"` / `"OFFLINE"` (LWT) |
+| `unimar/esp32/temperatura` | 0 | Não | Valor float em °C |
+| `unimar/esp32/umidade` | 0 | Não | Valor float em % |
 
 ---
 
