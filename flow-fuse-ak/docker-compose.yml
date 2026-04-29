@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+
+  # ─────────────────────────────────────────
+  # MQTT Broker — Eclipse Mosquitto
+  # ─────────────────────────────────────────
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"   # MQTT
+      - "9001:9001"   # WebSocket
+    volumes:
+      - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_sub -h 127.0.0.1 -p 1883 -t '$$SYS/#' -C 1 -i healthcheck -W 3"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - iot-net
+
+  # ─────────────────────────────────────────
+  # Node-RED
+  # ─────────────────────────────────────────
+  node-red:
+    image: nodered/node-red:latest
+    container_name: node-red
+    restart: unless-stopped
+    ports:
+      - "1880:1880"
+    environment:
+      - TZ=America/Sao_Paulo
+    volumes:
+      - ./node-red/data:/data
+    depends_on:
+      mosquitto:
+        condition: service_healthy
+    networks:
+      - iot-net
+
+networks:
+  iot-net:
+    driver: bridge
